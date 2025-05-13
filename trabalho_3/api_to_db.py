@@ -1,5 +1,4 @@
 import requests
-import json
 import sqlite3
 
 API_URL = "https://db.ygoprodeck.com/api/v7/cardinfo.php"
@@ -7,12 +6,10 @@ DB_NAME = "cards.db"
 
 
 def fetch_all_cards():
-    print("📥 Fetching all cards from YGOPRODeck API...")
     response = requests.get(API_URL)
     if response.status_code != 200:
         raise Exception(f"API Error: {response.status_code}")
     cards = response.json().get("data", [])
-    print(f"✅ Fetched {len(cards)} cards.")
     return cards
 
 
@@ -129,7 +126,6 @@ def main():
     cursor = conn.cursor()
     create_tables(cursor)
 
-    print("🧩 Inserting into database...")
     for i, card in enumerate(cards, 1):
         insert_card(cursor, card)
         if i % 500 == 0:
@@ -138,7 +134,7 @@ def main():
 
     conn.commit()
     conn.close()
-    print(f"✅ All {len(cards)} cards imported into '{DB_NAME}'.")
+    print(f"All {len(cards)} cards imported into '{DB_NAME}'.")
 
 
 if __name__ == "__main__":
